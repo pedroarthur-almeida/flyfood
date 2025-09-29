@@ -1,5 +1,5 @@
 # FlyFood
-- Projeto do segundo período do Bacharelado em Sistemas de Informação.
+## Projeto do segundo período do Bacharelado em Sistemas de Informação.
 
 ![Drone](imgs/drone.png)
 
