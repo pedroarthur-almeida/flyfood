@@ -1,6 +1,7 @@
 # FlyFood
 Desenvolvido como projeto do segundo período do Bacharelado em Sistemas de Informação.
 Trata-se de uma aplicação acadêmica que simula entregas por drones, buscando a melhor rota possível em um ambiente urbano.
+___________________________________________________________________________________
 
 ![Drone](imgs/drone4.png)
 *Imagem meramente ilustrativa, gerada por inteligência artificial.*
