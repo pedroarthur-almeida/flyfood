@@ -1,5 +1,5 @@
 # FlyFood
-## Desenvolvido como projeto do segundo período do Bacharelado em Sistemas de Informação.
+- Desenvolvido como projeto do segundo período do Bacharelado em Sistemas de Informação.
 
 ![Drone](imgs/drone.png)
 
