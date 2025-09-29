@@ -16,6 +16,6 @@ O FlyFood apresenta a ideia de drones realizando entregas em uma cidade. Esses d
 - 📍 Identificação de pontos de interesse.
 - 📏 Cálculo de distâncias.
 - 🔀 Geração de permutações de rotas (força bruta).
-- 💰 Cálculo do custo total das rotas
+- 💰 Cálculo do custo total das rotas.
 
 
