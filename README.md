@@ -12,17 +12,12 @@ O FlyFood apresenta a ideia de drones realizando entregas em uma cidade. Esses d
 - Python 3.12.3
 
 ## Funcionalidades do codigo: 
-1. Leitura de matriz a partir de arquivo
-- Lê uma matriz de um arquivo .txt e trata possíveis erros como arquivo vazio, cabeçalho inválido ou dimensões incorretas.
+- Leitura de matriz a partir de arquivo. (Lê uma matriz de um arquivo .txt e trata possíveis erros como arquivo vazio, cabeçalho inválido ou dimensões incorretas.)
 
-2. Identificação de pontos de interesse
-- Detecta na matriz os pontos de entrega e o ponto de partida (R), garantindo que cada ponto seja representado por uma letra válida.
+- Identificação de pontos de interesse. (Detecta na matriz os pontos de entrega e o ponto de partida (R), garantindo que cada ponto seja representado por uma letra válida.)
 
-3. Cálculo de distâncias
-- Calcula a distância Manhattan entre quaisquer dois pontos da matriz.
+- Cálculo de distâncias. (Calcula a distância Manhattan entre quaisquer dois pontos da matriz.)
 
-4. Geração de permutações de rotas
-- Cria todas as possíveis ordens de visita aos pontos de entrega usando força bruta.
+- Geração de permutações de rotas. (Cria todas as possíveis ordens de visita aos pontos de entrega usando força bruta.)
 
-5. Cálculo de custo total das rotas
-- Soma as distâncias entre pontos consecutivos para cada rota, permitindo identificar a rota mais curta.
+- Cálculo de custo total das rotas. (Soma as distâncias entre pontos consecutivos para cada rota, permitindo identificar a rota mais curta.)
