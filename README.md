@@ -2,7 +2,6 @@
 - Desenvolvido como projeto do segundo período do Bacharelado em Sistemas de Informação.
 
 ![Drone](imgs/drone.png)
-
 *Imagem meramente ilustrativa, gerada por inteligência artificial.*
 
 ## Descrição:
