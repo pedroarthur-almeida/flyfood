@@ -4,7 +4,7 @@ Trata-se de uma aplicação acadêmica que simula entregas por drones, buscando 
 ___________________________________________________________________________________
 
 <p align="center">
-  <img src="imgs/drone4.png" width="650" height="500" /><br>
+  <img src="imgs/drone4.png" width="650" height="550" /><br>
   <em>Imagem meramente ilustrativa, gerada por inteligência artificial.</em>
 </p>
 
