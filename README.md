@@ -3,7 +3,7 @@ Desenvolvido como projeto do segundo período do Bacharelado em Sistemas de Info
 Trata-se de uma aplicação acadêmica que simula entregas por drones, buscando a melhor rota possível em um ambiente urbano.
 ___________________________________________________________________________________
 
-<img src="imgs/drone4.png" width="200" height="150" />
+<img src="imgs/drone4.png" width="600" height="450" />
 *Imagem meramente ilustrativa, gerada por inteligência artificial.*
 
 ## Descrição:
