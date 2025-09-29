@@ -14,7 +14,7 @@ O FlyFood apresenta a ideia de drones realizando entregas em uma cidade. Esses d
 ## Tecnologias utilizadas:
 - Python 3.12.3
 
-## Funcionalidades do codigo: 
+## Funcionalidades do código: 
 - 📄 Leitura de matriz a partir de arquivo.
 - 📍 Identificação de pontos de interesse.
 - 📏 Cálculo de distâncias.
