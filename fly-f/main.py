@@ -87,6 +87,7 @@ def calcular_rotas(pontos):
             a, b = rota_completa[i], rota_completa[i + 1]
             custo += distancia(pontos[a], pontos[b])
         rotas.append((rota_completa, custo))
+    rotas.sort(key=lambda x: x[1])
     return rotas
 
 
