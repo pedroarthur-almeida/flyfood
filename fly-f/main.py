@@ -1,11 +1,8 @@
 
 
-BOLD = "\033[1m"
 RESET = "\033[0m"
 GREEN = "\033[32m"
-CYAN = "\033[36m"
 YELLOW = "\033[33m"
-MAGENTA = "\033[35m"
 
 
 def ler_matriz_arquivo(caminho):
@@ -46,13 +43,23 @@ def ler_matriz_arquivo(caminho):
 
 
 def encontrar_pontos(matriz):
-    pontos = {}
+    pontos = {}            
+    coords_ocupados = {}   
     for i, linha in enumerate(matriz):
         for j, valor in enumerate(linha):
             if valor and valor != "0":
+                
                 if len(valor) != 1 or not valor.isalpha():
-                    raise ValueError(f"Caractere inválido encontrado: {valor}")
+                    raise ValueError(f"Caractere inválido encontrado na posição {(i,j)}: {valor}")
+
+                if valor in pontos:
+                    raise ValueError(f"Letra duplicada encontrada: '{valor}' já em {pontos[valor]} e novamente em {(i,j)}")
+
+                if (i, j) in coords_ocupados:
+                    raise ValueError(f"Mais de um ponto na mesma posição {(i,j)}: '{coords_ocupados[(i,j)]}' e '{valor}'")
+
                 pontos[valor] = (i, j)
+                coords_ocupados[(i, j)] = valor
     return pontos
 
 
@@ -121,6 +128,8 @@ def main():
     except Exception as e:
         print(f"{YELLOW}Erro no cálculo das rotas: {e}{RESET}")
         return
+    
+    print(f"Total de rotas: {len(rotas)}")
 
     if not rotas:
         print(f"{YELLOW}Nenhuma rota encontrada.{RESET}")
