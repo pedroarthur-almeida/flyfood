@@ -21,6 +21,24 @@ O FlyFood apresenta a ideia de drones realizando entregas em uma cidade. Esses d
 - 🔀 Geração de permutações de rotas (força bruta).
 - 💰 Cálculo do custo total das rotas.
 
+# Estrutura do Projeto
+
+O FlyFood segue uma organização modular, separando o código em arquivos de acordo com sua responsabilidade.
+```
+FlyFood/
+│
+├─ matriz.txt
+├─ main.py
+├─ matriz_utils.py
+│ ├─ ler_matriz_arquivo()
+│ └─ encontrar_pontos()
+├─ rotas_utils.py
+│ ├─ distancia()
+│ ├─ gerar_permutacoes()
+│ └─ calcular_rotas()
+└─ README.md
+```
+
 # Instalação
 1. Clone o repositório:
 ```
