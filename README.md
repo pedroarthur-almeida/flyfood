@@ -21,7 +21,7 @@ O FlyFood apresenta a ideia de drones realizando entregas em uma cidade. Esses d
 - 🔀 Geração de permutações de rotas (força bruta).
 - 💰 Cálculo do custo total das rotas.
 
-# Estrutura do Projeto
+# Estrutura do Projeto:
 
 O FlyFood segue uma organização modular, separando o código em arquivos de acordo com sua responsabilidade.
 ```
@@ -38,7 +38,7 @@ fly-f/
 │ └─ calcular_rotas()
 ```
 
-# Exemplo de Uso (Simplificado)
+# Exemplo de Uso (Simplificado):
 
 Este é um exemplo simplificado para ilustrar como o FlyFood funciona com uma matriz pequena.
 
@@ -79,7 +79,7 @@ R -> C -> D -> B -> A -> R
 ```
 💡 Observação: Este exemplo utiliza uma matriz menor e poucas entregas apenas para demonstrar a funcionalidade do programa. Em matrizes maiores e com mais pontos, o número de rotas cresce rapidamente.
 
-# Instalação
+# Instalação:
 1. Clone o repositório:
 ```
 git clone https://github.com/pedroarthur-almeida/flyfood.git
