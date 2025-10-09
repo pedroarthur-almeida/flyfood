@@ -42,6 +42,43 @@ fly-f/
 
 Este é um exemplo simplificado para ilustrar como o FlyFood funciona com uma matriz pequena.
 
+Entrada:
+```
+5 5
+R 0 0 0 A
+0 0 B 0 0
+0 0 0 0 0
+0 C 0 0 0
+0 0 0 D 0
+```
+
+Saída esperada:
+```
+Matriz lida:
+R 0 0 0 A
+0 0 B 0 0
+0 0 0 0 0
+0 C 0 0 0
+0 0 0 D 0
+
+Pontos encontrados:
+R: (0, 0)
+A: (0, 4)
+B: (1, 2)
+C: (3, 1)
+D: (4, 3)
+Total de rotas: 24
+
+Melhores rotas (menor custo = 18):
+R -> A -> B -> D -> C -> R
+R -> A -> D -> C -> B -> R
+R -> B -> A -> D -> C -> R
+R -> B -> C -> D -> A -> R
+R -> C -> D -> A -> B -> R
+R -> C -> D -> B -> A -> R
+```
+💡 Observação: Este exemplo utiliza uma matriz menor e poucas entregas apenas para demonstrar a funcionalidade do programa. Em matrizes maiores, o número de rotas cresce rapidamente.
+
 # Instalação
 1. Clone o repositório:
 ```
