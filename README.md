@@ -106,14 +106,20 @@ source venv/bin/activate
 ```
 https://github.com/pedroarthur-almeida
 ```
+___________________________________________________________________________________
+
 - Matheus de Castro Pecora
 ```
 https://github.com/Matheuscastro1903
 ```
+___________________________________________________________________________________
+
 - Samuel Andrade Adelino da Silva
 ```
 https://github.com/samuelandradea
 ```
+___________________________________________________________________________________
+
 - Matheus Henrique Filgueira Cintra
 ```
 https://github.com/CintraMatheus
