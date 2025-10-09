@@ -77,7 +77,7 @@ R -> B -> C -> D -> A -> R
 R -> C -> D -> A -> B -> R
 R -> C -> D -> B -> A -> R
 ```
-💡 Observação: Este exemplo utiliza uma matriz menor e poucas entregas apenas para demonstrar a funcionalidade do programa. Em matrizes maiores, o número de rotas cresce rapidamente.
+💡 Observação: Este exemplo utiliza uma matriz menor e poucas entregas apenas para demonstrar a funcionalidade do programa. Em matrizes maiores e com mais pontos, o número de rotas cresce rapidamente.
 
 # Instalação
 1. Clone o repositório:
