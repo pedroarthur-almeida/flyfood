@@ -38,6 +38,10 @@ fly-f/
 │ └─ calcular_rotas()
 ```
 
+# Exemplo de Uso (Simplificado)
+
+Este é um exemplo simplificado para ilustrar como o FlyFood funciona com uma matriz pequena.
+
 # Instalação
 1. Clone o repositório:
 ```
