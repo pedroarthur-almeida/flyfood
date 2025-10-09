@@ -36,7 +36,6 @@ fly-f/
 │ ├─ distancia()
 │ ├─ gerar_permutacoes()
 │ └─ calcular_rotas()
-|
 ```
 
 # Instalação
