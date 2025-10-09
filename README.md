@@ -102,22 +102,26 @@ source venv/bin/activate
 ```
 
 ## Desenvolvedores Responsáveis
-Pedro Arthur M. de Almeida
+Pedro Arthur Marques de Almeida
+
 GitHub:
 ```
 https://github.com/pedroarthur-almeida
 ```
 Matheus de Castro Pecora
+
 GitHub:
 ```
 https://github.com/Matheuscastro1903
 ```
 Samuel Andrade Adelino da Silva
+
 GitHub:
 ```
 https://github.com/samuelandradea
 ```
 Matheus Henrique Filgueira Cintra
+
 GitHub:
 ```
 https://github.com/CintraMatheus
