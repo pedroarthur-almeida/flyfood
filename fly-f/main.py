@@ -4,7 +4,7 @@ from rotas_utils import *
 
 def main():
     try:
-        _, _, matriz = ler_matriz_arquivo("entrada.txt")
+        _, _, matriz = ler_matriz_arquivo(r"flyfood\fly-f\entrada.txt")
     except Exception as e:
         print(f"{YELLOW}Erro ao ler a matriz: {e}{RESET}")
         return
