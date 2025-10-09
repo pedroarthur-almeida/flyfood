@@ -54,14 +54,14 @@ R 0 0 0 A
 
 Saída esperada:
 ```
-Matriz lida:
+(Matriz lida)
 R 0 0 0 A
 0 0 B 0 0
 0 0 0 0 0
 0 C 0 0 0
 0 0 0 D 0
 
-Pontos encontrados:
+(Pontos encontrados)
 R: (0, 0)
 A: (0, 4)
 B: (1, 2)
@@ -69,7 +69,7 @@ C: (3, 1)
 D: (4, 3)
 Total de rotas: 24
 
-Melhores rotas (menor custo = 18):
+(Melhores rotas (menor custo = 18))
 R -> A -> B -> D -> C -> R
 R -> A -> D -> C -> B -> R
 R -> B -> A -> D -> C -> R
