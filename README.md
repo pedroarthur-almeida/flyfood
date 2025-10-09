@@ -21,4 +21,14 @@ O FlyFood apresenta a ideia de drones realizando entregas em uma cidade. Esses d
 - 🔀 Geração de permutações de rotas (força bruta).
 - 💰 Cálculo do custo total das rotas.
 
+# Instalação
+1. Clone o repositório:
+```
+git clone https://github.com/pedroarthur-almeida/flyfood.git
+```
+2. Execute:
+```
+python main.py
+```
+
 
