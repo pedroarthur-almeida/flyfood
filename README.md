@@ -31,4 +31,16 @@ git clone https://github.com/pedroarthur-almeida/flyfood.git
 python main.py
 ```
 
+# Crie um ambiente virtual (recomendado):
+- No Windows:
+```
+python -m venv venv
+venv\Scripts\activate
+```
+- No Mac/Linux:
+```
+python -m venv venv
+source venv/bin/activate
+```
+
 
