@@ -101,7 +101,7 @@ python -m venv venv
 source venv/bin/activate
 ```
 
-# Desenvolvedores Responsáveis
+# Desenvolvedores Responsáveis:
 - Pedro Arthur Marques de Almeida
 ```
 https://github.com/pedroarthur-almeida
