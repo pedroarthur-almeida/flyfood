@@ -84,7 +84,7 @@ R -> C -> D -> B -> A -> R
 ```
 git clone https://github.com/pedroarthur-almeida/flyfood.git
 ```
-2. Instale as dependencias:
+2. Instale as dependências:
 ```
 pip install -r requirements.txt
 ```
