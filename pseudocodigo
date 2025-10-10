@@ -1,0 +1,70 @@
+INÍCIO
+
+Leitura da matriz do arquivo
+Abrir o arquivo "entrada.txt"
+Se o arquivo não existir:
+    Exibir "Arquivo não encontrado" e encerrar
+Ler todas as linhas não vazias
+Ler a primeira linha e separar o número de linhas (nrows) e colunas (ncols)
+Verificar se as dimensões são válidas (> 0)
+Para cada linha da matriz:
+    Separar os elementos
+    Caso falte elemento, preencher com "0"
+    Adicionar a linha à matriz
+
+Identificação dos pontos na matriz 
+Criar um dicionário vazio de pontos
+Para cada posição (i, j) na matriz:
+    Se o valor for diferente de "0":
+        Verificar se é uma letra válida
+        Armazenar no dicionário com a letra como chave e (i, j) como valor
+
+Cálculo das distâncias
+Definir uma função DISTANCIA(a, b):
+    Retornar a distância de Manhattan entre os pontos a e b
+
+Geração das permutações
+Definir uma função GERAR PERMUTACOES(lista):
+    Se a lista estiver vazia, retornar [[]]
+    Se houver apenas um elemento, retornar [lista]
+    Caso contrário, gerar todas as combinações possíveis da lista
+
+Cálculo das rotas
+Definir uma função CALCULAR ROTAS(pontos):
+    Separar todos os pontos de entrega (exceto o 'R')
+    Gerar todas as possíveis ordens de visita
+    Para cada permutação:
+        Criar uma rota que começa e termina em 'R'
+        Calcular o custo total da rota somando as distâncias entre os pontos
+        Armazenar (rota, custo) em uma lista de rotas
+    Ordenar as rotas pelo custo crescente
+    Retornar a lista de rotas
+
+Execução principal
+Ler a matriz chamando LER MATRIZ ARQUIVO("entrada.txt")
+Exibir a matriz no terminal
+
+Identificar os pontos chamando ENCONTRAR PONTOS(matriz)
+Exibir os pontos encontrados
+
+Se o ponto "R" (restaurante) não existir:
+    Exibir mensagem e encerrar o programa
+
+Calcular as rotas chamando CALCULAR ROTAS(pontos)
+Se não houver rotas:
+    Exibir "Nenhuma rota encontrada" e encerrar
+
+Impressão dos resultados
+Encontrar o menor custo entre as rotas
+Para cada rota:
+    Se o custo for igual ao menor custo:
+        Marcar como "ÓTIMA"
+    Exibir a sequência da rota e o custo total
+
+Se houver apenas uma melhor rota:
+    Exibir "Melhor rota encontrada"
+Senão:
+    Exibir "Melhores rotas encontradas"
+Mostrar todas as rotas com custo mínimo
+
+FIM
