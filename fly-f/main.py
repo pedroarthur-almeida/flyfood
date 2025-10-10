@@ -1,10 +1,31 @@
 from matriz_utils import *
 from rotas_utils import *
+import tracemalloc
+import psutil
+import os
+
+
+def medir_memoria(funcao, *args, **kwargs):
+    process = psutil.Process(os.getpid())
+    tracemalloc.start()
+
+    resultado = funcao(*args, **kwargs)
+
+    pico_tracemalloc = tracemalloc.get_traced_memory()[1]
+    tracemalloc.stop()
+
+    ram_uso_total = process.memory_info().rss / 1024**2
+
+    print(f"\n{GREEN}(MEDIÇÃO DE MEMÓRIA){RESET}")
+    print(f"RAM total usada pelo processo (psutil): {ram_uso_total:.2f} MB")
+    print(f"Pico de memória alocada por objetos Python (tracemalloc): {pico_tracemalloc / 1024**2:.2f} MB\n")
+
+    return resultado
 
 
 def main():
     try:
-        _, _, matriz = ler_matriz_arquivo(r"flyfood\fly-f\entrada.txt")
+        _, _, matriz = ler_matriz_arquivo("fly-f/entrada.txt")
     except Exception as e:
         print(f"{YELLOW}Erro ao ler a matriz: {e}{RESET}")
         return
@@ -28,7 +49,7 @@ def main():
         return
 
     try:
-        rotas = calcular_rotas(pontos)
+        rotas = medir_memoria(calcular_rotas, pontos)
     except Exception as e:
         print(f"{YELLOW}Erro no cálculo das rotas: {e}{RESET}")
         return
