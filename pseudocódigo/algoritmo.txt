@@ -1,4 +1,4 @@
-INÍCIO
+INÍCIO 
 
 Leitura da matriz do arquivo
 Abrir o arquivo "entrada.txt"
