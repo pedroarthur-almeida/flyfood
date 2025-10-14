@@ -6,6 +6,8 @@ import os
 
 
 def medir_memoria(funcao, *args, **kwargs):
+    #função utilizada para medir a quantidade de memória ram utilizada a partir da 
+    #biblioteca psutil
     process = psutil.Process(os.getpid())
     tracemalloc.start()
 
@@ -25,6 +27,8 @@ def medir_memoria(funcao, *args, **kwargs):
 
 def main():
     try:
+        #puxará a função ler_matriz e 
+        #retornará nrows, ncols, matriz
         _, _, matriz = ler_matriz_arquivo("fly-f/entrada.txt")
     except Exception as e:
         print(f"{YELLOW}Erro ao ler a matriz: {e}{RESET}")
@@ -35,6 +39,15 @@ def main():
         print(" ".join(linha))
 
     try:
+        #puxará a função com a matriz já organizada
+        # vinda da função ler_matriz_arquivo e retornará os pontos 
+        
+        
+        
+        
+        
+        
+        #retorna rotas um dicionário com as coordenadas de cada ponto
         pontos = encontrar_pontos(matriz)
     except Exception as e:
         print(f"{YELLOW}Erro nos pontos: {e}{RESET}")
@@ -49,10 +62,12 @@ def main():
         return
 
     try:
+       
         rotas = medir_memoria(calcular_rotas, pontos)
     except Exception as e:
         print(f"{YELLOW}Erro no cálculo das rotas: {e}{RESET}")
         return
+    
 
     print(f"Total de rotas: {len(rotas)}")
 
