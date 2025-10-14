@@ -6,8 +6,8 @@ import os
 
 
 def medir_memoria(funcao, *args, **kwargs):
-    #função utilizada para medir a quantidade de memória ram utilizada a partir da 
-    #biblioteca psutil
+    #função utilizada para medir a quantidade de memória ram utilizada a partir das 
+    #bibliotecas psutil e tracemalloc
     process = psutil.Process(os.getpid())
     tracemalloc.start()
 
