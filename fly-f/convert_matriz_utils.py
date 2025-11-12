@@ -30,4 +30,18 @@ def converter_matriz(matriz):
 
 def matriz_tsp(matriz_convertida):
     permutacao, distancia_total = solve_tsp_local_search(matriz_convertida)
+
     #Utiliza uma heuristica e acha um bom caminho e a distancia
+
+def salvar_como_tsplib(chaves, matriz, nome_arquivo="instancia.tsp"):
+    n = len(chaves)
+    with open(nome_arquivo, "w") as f:
+        f.write(f"NAME: {nome_arquivo}\n")
+        f.write("TYPE: TSP\n")
+        f.write(f"DIMENSION: {n}\n")
+        f.write("EDGE_WEIGHT_TYPE: EXPLICIT\n")
+        f.write("EDGE_WEIGHT_FORMAT: FULL_MATRIX\n")
+        f.write("EDGE_WEIGHT_SECTION\n")
+        for linha in matriz:
+            f.write(" ".join(map(str, linha)) + "\n")
+        f.write("EOF\n")
