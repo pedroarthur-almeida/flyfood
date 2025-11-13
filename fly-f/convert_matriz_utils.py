@@ -1,37 +1,36 @@
+from rotas_utils import distancia
 from python_tsp.heuristics import solve_tsp_local_search
 import numpy as np
-
-# Função auxiliar: distância euclidiana entre dois pontos (i,j)
-def distancia(p1, p2):
-    return round(((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2) ** 0.5, 2)
+import random
 
 def converter_matriz(matriz):
+    #Acha a posição dos pontos
     pontos = {}
-    for i, linha in enumerate(matriz):
-        for j, celula in enumerate(linha):
-            if celula != "0":
-                pontos[celula] = (i, j)
-
+    for i, linha in enumerate(matriz): #Passa pelas linhas
+        for j, celula in enumerate(linha): #Passa por cada celula ou seja, as colunas nas linhas
+            if celula != "0": #Se for vazia
+                pontos[celula] = (i,j) #Coordenada
     lista = []
     for k in pontos:
         if k != "R":
-            lista.append(k)
+            lista.append(k) #Pega os pontos, como ABCD... e adiciona o R no inicio
     chaves_ordenadas = ["R"] + sorted(lista)
 
     matriz_convertida = []
     for a in chaves_ordenadas:
-        linha = []
-        for b in chaves_ordenadas:
-            if a == b:
-                linha.append(0)
+        linha = [] #Monta as linhas
+        for b in chaves_ordenadas: 
+            if a==b:
+                linha.append(0) #Adiciona 0 se a linha e a coluna forem iguais, ou seja
+                                #Não há distancia entre um ponto e si mesmo
             else:
                 linha.append(distancia(pontos[a], pontos[b]))
-        matriz_convertida.append(linha)
-
+        matriz_convertida.append(linha) #Adciona as distancias entre os pontos nas linhas
+    
     return chaves_ordenadas, matriz_convertida
 
 def matriz_tsp(matriz_convertida):
-    matriz_np = np.array(matriz_convertida)  # ✅ conversão para NumPy
+    matriz_np = np.array(matriz_convertida)
     permutacao, distancia_total = solve_tsp_local_search(matriz_np)
     return permutacao, distancia_total
 
@@ -48,11 +47,30 @@ def salvar_como_tsplib(chaves, matriz, nome_arquivo="instancia.tsp"):
             f.write(" ".join(map(str, linha)) + "\n")
         f.write("EOF\n")
 
+
+
+def gerar_individuos_aleatorios(chaves):
+    aleatorios = []
+    tentativas = 0
+    max_tentativas = 1000
+    while len(aleatorios)  < 8*len(chaves) and tentativas < max_tentativas:
+        copia = chaves[:]
+        copia.pop(0)
+        random.shuffle(copia)
+        individuo = ["R"]+copia
+        inverso = ["R"]+ copia[::-1]
+        if individuo not in aleatorios and inverso not in aleatorios:
+            aleatorios.append(individuo)
+        tentativas +=1
+        
+    return aleatorios
+
+
 # ===================== TESTE =====================
 if __name__ == "__main__":
     matriz_exemplo = [
         ["0", "0", "A", "0", "B"],
-        ["0", "0", "0", "0", "0"],
+        ["0", "E", "0", "0", "0"],
         ["0", "C", "0", "D", "0"],
         ["0", "0", "0", "0", "0"],
         ["R", "0", "0", "0", "0"]
@@ -63,6 +81,8 @@ if __name__ == "__main__":
         print(linha)
 
     chaves, matriz_convertida = converter_matriz(matriz_exemplo)
+
+    
 
     print("\n=== PONTOS ORDENADOS ===")
     print(chaves)
@@ -80,3 +100,6 @@ if __name__ == "__main__":
 
     salvar_como_tsplib(chaves, matriz_convertida)
     print("\nArquivo 'instancia.tsp' salvo com sucesso!")
+
+    print("Individuos aleatorios")
+    print(gerar_individuos_aleatorios(chaves))
