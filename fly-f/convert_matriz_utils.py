@@ -3,6 +3,17 @@ from python_tsp.heuristics import solve_tsp_local_search
 import numpy as np
 import random
 
+
+#Matriz, por enquanto coloequei um exemplo
+matriz = [
+        ["0", "0", "A", "0", "B"],
+        ["0", "E", "0", "0", "0"],
+        ["0", "C", "0", "D", "0"],
+        ["0", "0", "0", "0", "0"],
+        ["R", "0", "0", "0", "0"]
+    ]
+
+
 def converter_matriz(matriz):
     #Acha a posição dos pontos
     pontos = {}
@@ -55,10 +66,11 @@ def gerar_individuos_aleatorios(chaves):
     max_tentativas = 1000
     while len(aleatorios)  < 8*len(chaves) and tentativas < max_tentativas:
         copia = chaves[:]
-        copia.pop(0)
+        if copia and copia[0] == "R":
+            copia.pop(0)
         random.shuffle(copia)
-        individuo = ["R"]+copia
-        inverso = ["R"]+ copia[::-1]
+        individuo = ["R"]+copia+["R"]
+        inverso = ["R"]+ copia[::-1]+["R"]
         if individuo not in aleatorios and inverso not in aleatorios:
             aleatorios.append(individuo)
         tentativas +=1
@@ -66,40 +78,88 @@ def gerar_individuos_aleatorios(chaves):
     return aleatorios
 
 
-# ===================== TESTE =====================
-if __name__ == "__main__":
-    matriz_exemplo = [
-        ["0", "0", "A", "0", "B"],
-        ["0", "E", "0", "0", "0"],
-        ["0", "C", "0", "D", "0"],
-        ["0", "0", "0", "0", "0"],
-        ["R", "0", "0", "0", "0"]
-    ]
+#Gerar rota Vizinho mais proximo
+def NN(matriz):
+    start = 0
+    chaves, matriz_convertida = converter_matriz(matriz)
+    numero_pontos = len(matriz_convertida)
+    rota = [start]
+    nao_visitados = set(range(1, numero_pontos)) #os nao visitados, menos o 0
+    atual = start
 
-    print("=== MATRIZ ORIGINAL ===")
-    for linha in matriz_exemplo:
-        print(linha)
+    while nao_visitados:
+        menor = None
+        melhor_distancia = float("inf") 
+        for possibilidade in nao_visitados: #percorsse as possibilidades entre os nao visitados
+            distanciaAtual = matriz_convertida[atual][possibilidade]
+            if distanciaAtual < melhor_distancia:
+                melhor_distancia = distanciaAtual
+                menor = possibilidade
+        #add o escolhido e atualiza
+        rota.append(menor)
+        nao_visitados.remove(menor)
+        atual = menor
+    rota.append(start)
 
-    chaves, matriz_convertida = converter_matriz(matriz_exemplo)
+    return rota
 
+def juntarRotas(chaves, matriz):
+    #gera as rotas aleatorias
+    rotasAleatorias = gerar_individuos_aleatorios(chaves)
+    # converter_matriz para obter mapeamento label -> índice
+    chaves_list, matriz_convertida = converter_matriz(matriz)
+    label_to_indice = {label: index for index, label in enumerate(chaves_list)} #cria um dicioonario relacionando a "letra" com o seu valor
+    #Converte as rotas aleatorias para indices
+    aleatoriasIndices = []
+    for rota_labels in rotasAleatorias:
+        rota_indice = [label_to_indice[label] for label in rota_labels]
+        aleatoriasIndices.append(rota_indice)
+    # obtém rota NN (já em índices) e junta
+    rota_nn = NN(matriz)
+
+    rotas = aleatoriasIndices + [rota_nn]
+    return rotas
+
+
+def opt2(rotas=None, chaves=None, matriz=None):
+
+    if rotas is None:
+        if chaves is None or matriz is None:
+            raise ValueError("Se 'rotas' não for passado, é preciso fornecer 'chaves' e 'matriz'.")
+        rotas = juntarRotas(chaves, matriz)
     
+    populacao_inicial= []
+    #aplica 2opt em cada rota
+    for rota in rotas:
+        n = len(rota)
+        #função que calcula ganho local da troca (4 pontos afetados)
+        def ganho_troca(rota_local, i, j):
+            a, b = rota_local[i - 1], rota_local[i]
+            c, d = rota_local[j], rota_local[j + 1]
 
-    print("\n=== PONTOS ORDENADOS ===")
-    print(chaves)
+            antes = distancia(a, b) + distancia(c, d)
+            depois = distancia(a, c) + distancia(b, d)
+            #diferença
+            return depois - antes
+        
+        melhorou = True
 
-    print("\n=== MATRIZ DE DISTÂNCIAS ===")
-    for linha in matriz_convertida:
-        print(linha)
+        #Se tiver alguma melhoria possivel
+        while melhorou:
+            melhorou = False
+            # i percorre do primeiro elemento após o R até penúltimos possíveis
+            for i in range(1, n-2): #Não mexe no 0
+                for j in range (i+1, n-1): #j sempre a frente de i
+                    ganho = ganho_troca(rota, i, j)
+                    if ganho < 0:
+                        # substitui pela parte invertida
+                        rota[i:j + 1] = list(reversed(rota[i:j + 1]))
+                        melhorou = True
+                        break
+                if melhorou:
+                    break
 
-    permutacao, distancia_total = matriz_tsp(matriz_convertida)
+        #adiciona rota à população inicial
+        populacao_inicial.append(rota)
 
-    print("\n=== RESULTADO DO TSP (Heurística Local Search) ===")
-    rota = [chaves[i] for i in permutacao]
-    print("Rota encontrada:", " -> ".join(rota))
-    print("Distância total:", round(distancia_total, 2))
-
-    salvar_como_tsplib(chaves, matriz_convertida)
-    print("\nArquivo 'instancia.tsp' salvo com sucesso!")
-
-    print("Individuos aleatorios")
-    print(gerar_individuos_aleatorios(chaves))
+    return populacao_inicial
