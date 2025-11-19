@@ -123,43 +123,49 @@ def juntarRotas(chaves, matriz):
 
 def opt2(rotas=None, chaves=None, matriz=None):
 
+    # --- sempre cria matriz_convertida ---
+    if matriz is None:
+        raise ValueError("É necessário fornecer 'matriz' para o opt2.")
+     
+    chaves_list, matriz_convertida = converter_matriz(matriz)
+
+    # --- se rotas não foi informado, gera ---
     if rotas is None:
-        if chaves is None or matriz is None:
-            raise ValueError("Se 'rotas' não for passado, é preciso fornecer 'chaves' e 'matriz'.")
+        if chaves is None:
+            raise ValueError("É necessário fornecer 'chaves' quando rotas for None.")
         rotas = juntarRotas(chaves, matriz)
-    
-    populacao_inicial= []
-    #aplica 2opt em cada rota
+
+    populacao_inicial = []
+
+    # --- aplica 2-opt em cada rota ---
     for rota in rotas:
         n = len(rota)
-        #função que calcula ganho local da troca (4 pontos afetados)
+
+        # função interna sempre tem acesso à matriz_convertida agora
         def ganho_troca(rota_local, i, j):
             a, b = rota_local[i - 1], rota_local[i]
             c, d = rota_local[j], rota_local[j + 1]
 
-            antes = distancia(a, b) + distancia(c, d)
-            depois = distancia(a, c) + distancia(b, d)
-            #diferença
-            return depois - antes
-        
-        melhorou = True
+            antes = matriz_convertida[a][b] + matriz_convertida[c][d]
+            depois = matriz_convertida[a][c] + matriz_convertida[b][d]
 
-        #Se tiver alguma melhoria possivel
+            return depois - antes
+
+        melhorou = True
         while melhorou:
             melhorou = False
-            # i percorre do primeiro elemento após o R até penúltimos possíveis
-            for i in range(1, n-2): #Não mexe no 0
-                for j in range (i+1, n-1): #j sempre a frente de i
+
+            for i in range(1, n - 2):
+                for j in range(i + 1, n - 1):
                     ganho = ganho_troca(rota, i, j)
                     if ganho < 0:
-                        # substitui pela parte invertida
-                        rota[i:j + 1] = list(reversed(rota[i:j + 1]))
+                        rota[i:j+1] = reversed(rota[i:j+1])
                         melhorou = True
                         break
                 if melhorou:
                     break
 
-        #adiciona rota à população inicial
         populacao_inicial.append(rota)
 
     return populacao_inicial
+
