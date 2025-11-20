@@ -1,5 +1,5 @@
-from matriz_utils import *
-from rotas_utils import *
+from utils.matriz import *
+from utils.rotas import *
 import tracemalloc
 import psutil
 import os
@@ -25,7 +25,7 @@ def medir_memoria(funcao, *args, **kwargs):
 
 def main():
     try:
-        _, _, matriz = ler_matriz_arquivo("fly-f/entrada.txt")
+        _, _, matriz = ler_matriz_arquivo("FlyF/entrada.txt")
     except Exception as e:
         print(f"{YELLOW}Erro ao ler a matriz: {e}{RESET}")
         return
