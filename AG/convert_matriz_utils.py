@@ -12,7 +12,7 @@ class TratamentoMatriz:
         return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
 
-    def __init__(self):
+    def __init__(self, usarBR58=False):
         """
         Lê o arquivo de entrada e guarda:
         - nrows  → número de linhas
@@ -20,11 +20,17 @@ class TratamentoMatriz:
         - matriz → matriz original em formato de lista de listas
 
         """
-        self.caminho="AG/entrada.txt"
-        self.nrows, self.ncols, self.matriz = self.ler_matriz_arquivo()
+        self.usar_br58 = usarBR58
 
-        self.chaves,self.matriz_adjacencia=self.converter_matriz()
-        self.permutacao,self.distancia_total=self.matriz_tsp()
+        if usarBR58:
+            self.chaves, self.matriz_adjacencia = self.carregar_br58()
+            self.permutacao, self.distancia_total = self.matriz_tsp()
+        else:
+            self.caminho="AG/entrada.txt"
+            self.nrows, self.ncols, self.matriz = self.ler_matriz_arquivo()
+
+            self.chaves,self.matriz_adjacencia=self.converter_matriz()
+            self.permutacao,self.distancia_total=self.matriz_tsp()
 
 
     def ler_matriz_arquivo(self):
@@ -153,4 +159,35 @@ class TratamentoMatriz:
 
     def get_resultados(self):
         return self.permutacao,self.distancia_total,self.chaves,self.matriz_adjacencia
+    
+    def carregar_br58(self):
+        caminho = "edgesbrasil58.tsp"
+        distancias = {}
         
+        with open(caminho, "r") as arq:
+            for i in range(1, 58):  # linhas 1 a 57
+                linha = arq.readline().split()
+                lista = list(linha)
+
+                for j in range(i+1, 59):  # colunas i+1 a 58
+                    if len(lista) == 0:
+                        raise ValueError(f"Linha {i} não possui valores suficientes.")
+                    peso = int(lista.pop(0))
+
+                    distancias[(i, j)] = peso
+                    distancias[(j, i)] = peso
+
+        # Transformar em matriz 58×58
+        matriz = []
+        for i in range(1, 59):
+            linha = []
+            for j in range(1, 59):
+                if i == j:
+                    linha.append(0)
+                else:
+                    linha.append(distancias[(i, j)])
+            matriz.append(linha)
+
+        chaves = list(range(1, 59))  # cidades 1..58
+
+        return chaves, matriz
