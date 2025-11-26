@@ -66,12 +66,13 @@ class PopulacaoInicial:
         rotasAleatorias = self.gerar_individuos_aleatorios()
         # converter_matriz para obter mapeamento label -> índice
         
-        label_to_indice = {label: index for index, label in enumerate(self.chaves)} 
+        self.dic_indices = {label: index for index, label in enumerate(self.chaves)}
+
         #cria um dicioonario relacionando a "letra" com o seu valor
         #Converte as rotas aleatorias para indices
         aleatoriasIndices = []
         for rota_labels in rotasAleatorias:
-            rota_indice = [label_to_indice[label] for label in rota_labels]
+            rota_indice = [self.dic_indices[label] for label in rota_labels]
             aleatoriasIndices.append(rota_indice)
         # obtém rota NN (já em índices) e junta
         rota_nn = self.NN()
@@ -132,4 +133,4 @@ class PopulacaoInicial:
         return populacao_inicial
     
     def get_populacao(self):
-        return self.populacao_inicial
+        return self.populacao_inicial,self.dic_indices

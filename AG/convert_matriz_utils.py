@@ -73,6 +73,7 @@ class TratamentoMatriz:
 
         - chaves_ordenadas → ["R", "A", "B", ...]
         - matriz_convertida → matriz de adjacência com distâncias Manhattan
+
         """
 
         # 1. Achar posições de todos os pontos da matriz
@@ -80,7 +81,8 @@ class TratamentoMatriz:
         for i, linha in enumerate(self.matriz):
             for j, celula in enumerate(linha):
                 if celula != "0":
-                    pontos[celula] = (i, j)
+                    #celula="nome da posição"=A,B,C...
+                    pontos[celula] = (i, j)#valor de i e j seria o valor das coordenadas
 
         # 2. Criar lista de pontos ignorando 'R'
         lista = []
@@ -105,6 +107,8 @@ class TratamentoMatriz:
 
         return chaves_ordenadas, matriz_convertida
 
+        #matriz convertida é a matriz de adjacência
+        #chaves ordenadas é =#chaves=['R', 'A', 'B', 'C', 'D']
 
     def matriz_tsp(self):
         matriz_np = np.array(self.matriz_adjacencia) 
