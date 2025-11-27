@@ -1,359 +1,185 @@
 import random
 
 class AG:
-    def __init__(self,pop_inicial,chaves,matriz_adj,dic_indices):
-        self.pop_inicial=pop_inicial
+    def __init__(self, pop_inicial, chaves, matriz_adj, dic_indices):
+        self.populacao = pop_inicial
+        self.chaves = chaves
+        self.matriz_adj = matriz_adj
+        self.dic_indices = dic_indices
+        self.melhor_rota_global = None
+        self.melhor_custo_global = float('inf')
         
-        self.chaves=chaves
-        self.matriz_adj=matriz_adj
-        self.dic_indices=dic_indices
+        self.executar_evolucao()
 
-        """
-        {'R': 0, 
-        'A': 1, 
-        'B': 2, 
-        'C': 3, 
-        'D': 4}
-        """
-
-        self.loop_geracoes()
-        
-
-        
-
-        #avaliação das rotas deve ser feito logo com a população inicial,depois fazendo cruzamento 
-        # e achando os filhos,se 
-
-
-
-    def loop_geracoes(self):
-        """Controla o número de gerações do algoritmo (1000 gerações)"""
-        # Faz uma cópia da população inicial para não modificar a original
-        populacao_atual = []
-    
-        for rota in self.pop_inicial:
-            populacao_atual.append(rota)
-
-        # Inicializa o melhor custo e rota com a população inicial
-        
-    
+    def executar_evolucao(self):
+        """Executa 100 gerações do algoritmo genético"""
         for geracao in range(1000):
+            #Analisar as rotas e custos da população inicial
+            populacao_avaliada = self.avaliar_populacao()
             
-            # Processa uma geração e atualiza a população
-            self.soma_pop_ini()
-        
-           
-
-    def soma_pop_ini(self):
-
-        menor_custo=float("inf")
-        melhor_rota=None
-
-
-        for rota in self.pop_inicial:
-            custo_total=0
-            for i in range(len(rota) - 1):
-                
-                ponto_atual = rota[i]
-                ponto_seguinte = rota[i + 1]
-                # Adiciona a distância entre o ponto atual e o próximo
-                #serrá feito  rota = [0, 1, 2, 3, 0] -> custo = 
-                # matriz_adj[0][1] + matriz_adj[1][2] + matriz_adj[2][3] + matriz_adj[3][0]
-                custo_total += self.matriz_adj[ponto_atual][ponto_seguinte]
-
-
-                """
-                Exemplo de execução para o entendimento
-             [0, 2, 1, 3, 0]
-
-                #ponto atual=0
-                ponto seguinte=2
-                custo+=valor que equivale na matriz de adjacência[0][2]        
-                """
-
-
-                
-
-            if custo_total<=melhor_rota:
-                menor_custo=custo_total
-                melhor_rota=rota
-        
-        self.melhor_rota=melhor_rota
-        self.menor_custo=menor_custo
-
-        self.selecao_atualizada()
-
-        
-
-    
-
-    def selecao_atualizada(self):
-        #seleção é a parte que iremos escolher os pais
-
-        """
-        A seleção pode ser feita de várias formas: aleatória, elitista, por torneio, etc.
-        Você mencionou que não quer usar termos técnicos da biologia, então vamos pensar em 
-        termos de como escolher as rotas para cruzar.
-
-        Vou explicar as opções:
-
-        Seleção aleatória: Escolhemos pares de pais aleatoriamente da população inicial.
-
-        Seleção elitista: Escolhemos os melhores (menor custo) para serem pais.
-
-        Seleção por torneio: Escolhemos aleatoriamente um pequeno grupo e desse grupo selecionamos o 
-        melhor para ser pai.
-        
-        """
-
-        pass
-        
-    
-
-    def selecao(self):
-        
-        #irá qual a quantidade total de populações geradas
-        qnt_popinicial=len(self.pop_inicial) #formato de listas
-
-        #max entre 2 ou rotas maiores
-        qnt_escolhida=max(2,len(self.chaves)//2) #quantas rotas máximas será escolhida
-
-        
-       
-        lista_selecao = random.sample(self.pop_inicial, k=min(qnt_escolhida, qnt_popinicial))
-        #lista gerada aleatoriamente a partir do self.pop_inicial que veio da outra classe
-
-
-        """
-        Objetivo: escolher k elementos aleatórios de uma sequência, sem repetir elementos.
-
-        Parâmetros:
-
-        população → qualquer lista, tupla ou conjunto iterável de onde você quer tirar os elementos.
-
-        k → quantidade de elementos que você quer selecionar.
-
-        qnt_escolhida → número de indivíduos que você quer selecionar.
-
-        qnt_popinicial → número total de indivíduos disponíveis na população.
-
-        Usar min(qnt_escolhida, qnt_popinicial) garante que você nunca tente selecionar mais indivíduos do que 
-        existem, evitando erro.
-
-        random.sample() não repete elementos
-
-        """
-
-        # Inicializa variáveis
-        menor_custo = float("inf") #inicia com valor infinito,para que seja garantido que as primeiras rotas serão melhores
-        segundo_menor_custo = float("inf")
-        melhor_rota = None
-        segunda_melhor_rota = None
-
-        custo=0
-
-        for rota in lista_selecao:
-            #Calcula custo da rota percorrendo cada valor e comparando com a matriz de adjacência
-            for i in range(len(rota)-1):
-                custo +=self.matriz_adj[rota[i]][rota[i+1]]
-                        
-
-            # Verifica se é o menor
-            if custo < menor_custo:
-                #  segundo menor antes
-                segundo_menor_custo = menor_custo
-                segunda_melhor_rota = melhor_rota
-
-                # Atualiza menor
-                menor_custo = custo
-                melhor_rota = rota
-
-            elif custo < segundo_menor_custo:
-                # Atualiza apenas o segundo menor
-                segundo_menor_custo = custo
-                segunda_melhor_rota = rota
-
-        
-        return menor_custo,segundo_menor_custo,melhor_rota,segunda_melhor_rota 
-
+            #Processo de seleçaõ
+            pais = self.selecionar_pais(populacao_avaliada, geracao)
             
+            # 3. Cruzamento
+            filhos = self.cruzar(pais)
+            
+            # 4. Mutação
+            filhos = self.mutar(filhos)
+            
+            # 5. Substituição
+            self.populacao = self.substituir_populacao(populacao_avaliada, filhos)
+            
+            # 6. Atualizar melhor global
+            self.atualizar_melhor_global(populacao_avaliada)
 
+    def avaliar_populacao(self ):
+        """Calcula fitness para cada indivíduo"""
+        populacao_avaliada = []
+        for rota in self.populacao:
+            custo = self.calcular_custo(rota)
+            populacao_avaliada.append((rota, custo))
+        return sorted(populacao_avaliada, key=lambda x: x[1])
+        #x[1] é utilizado para ordernar de forma que ordene do menor custo até o maior custo
 
+    def calcular_custo(self, rota):
+        """Calcula custo total de uma rota"""
+        custo = 0
+        for i in range(len(rota) - 1):
+            custo += self.matriz_adj[rota[i]][rota[i + 1]]
+        return custo
 
+    def selecionar_pais(self, populacao_avaliada, geracao):
+        """Seleção mista: elitista + aleatória"""
+        #populacção avaliada é a lista  que possui tuplas=rota,custo
 
-    def cruzamento(self):
+        tamanho_torneio = 3
+
+        #número de pais será a metade da população inicial,pois cada par de pais gerar 2 filhos
+        num_pais = len(populacao_avaliada) // 2
         
-        self.pai1=[]
-        self.pai2=[]
-
+        pais = []
         
-        #processo de passar de índice para o nome da rota
-        indice_to_valor = {}
+        #elitismo pega os melhores
+        if geracao % 10 == 0:  # A cada 10 gerações-->apenas para diversificar
+            elitismo = 0.3  # 30% elitista
+        else:
+            elitismo = 0.4  # 20% elitista
+            
+        num_elite = int(num_pais * elitismo)#-->pegar a quantidade de pais que serão selecionados por elitismo
+        #gerações especiais
 
-        for chave in self.dic_indices:
-            valor = self.dic_indices[chave]
-            indice_to_valor[valor] = chave
 
-            """
-            {
-            0: "A",
-            1: "B",
-            2: "C",
-            3: "D"
-            }
+        for i in range(num_elite):
+            if i < len(populacao_avaliada):
+                    #população avalida já está ordenada,logo só é necessário pegar os primeiros
 
-            """
-
-        for a in self.melhor_rota:
-            valor=indice_to_valor[a]
-            self.pai1.append(valor)
-
-        for b in self.segunda_melhor_rota:
-            valor=indice_to_valor[b]
-            self.pai2.append(b)
-
-        tamanho = len(self.pai1)
-        filho1 = [None] * tamanho
-        filho2 = [None] * tamanho
-
+                individuo = populacao_avaliada[i]  #pega a tupla (rota, custo)
+                rota = individuo[0]  #extrai apenas a rota (primeiro elemento)
+                pais.append(rota)
         
+        # Torneio para o restante
+        while len(pais) < num_pais:
+            #tamanho torneio define quantos indivíduos disputam em cada "batalha"
+            competidores = random.sample(populacao_avaliada, tamanho_torneio)
+            #vai escolher 3 entre o população avaliada
+            #e aqui vai escolher o melhor entre eles em relação ao custo
+            vencedor = min(competidores, key=lambda x: x[1])
+            pais.append(vencedor[0])
+            #irá repetir o processo até pais se igualar com o num pais
+            
+        return pais
 
-        # delimitadores
-        i = random.randint(0, tamanho-2)
-        j = random.randint(i+1, tamanho-1)
+    def cruzar(self, pais):
+        """cruzamento de ordem OX """
 
-        #FILHO 1 
-
-        seguimento1 = self.pai1[i:j]
-
-        for p in range(i, j):
-            filho1[p] = self.pai1[p]
-
+        filhos = [] #lista vazia para armazenar os filhos
+        random.shuffle(pais) #embaralha a lista de pais,pois antes estava ordenado
         
-        preenchimento1 = self.pai2[:]  
+        for i in range(0, len(pais) - 1, 2):
+            pai1, pai2 = pais[i], pais[i + 1]
+            filho1, filho2 = self.crossover_ox(pai1, pai2)
+            filhos.extend([filho1, filho2])
+            
+        return filhos
 
-        for x in seguimento1:
-            preenchimento1.remove(x)
-
-# preenchimento cíclico
-        pos = j
-        tamanho_f = len(filho1)
-
-        for elemento in preenchimento1:
-            while filho1[pos] is not None:
-                pos = (pos + 1) % tamanho_f
-
-            filho1[pos] = elemento
-            pos = (pos + 1) % tamanho_f
-
-
-        # FILHO 2 
-
-        seguimento2 = self.pai2[i:j]
-
-        for p in range(i, j):
-            filho2[p] = self.pai2[p]
-
-        preenchimento2 = self.pai1[:]   # também copia!
-
-        for x in seguimento2:
-            preenchimento2.remove(x)
-
-        pos = j
-        tamanho_f2 = len(filho2)
-
-        for elemento in preenchimento2:
-            while filho2[pos] is not None:
-                pos = (pos + 1) % tamanho_f2
-
-            filho2[pos] = elemento
-            pos = (pos + 1) % tamanho_f2
-
-
-        return filho1,filho2
-
-
-
-
-
-
+    def crossover_ox(self, pai1, pai2):
         
-        #processo de cruzamento de ordem OX
-        """
-        De Ordem (OX)
-        Diferente do PMX, que se foca na posição absoluta de um segmento, o OX se foca em preservar a ordem 
-        relativa das cidades no restante da rota.
-
-        A principal vantagem do OX é sua simplicidade e a garantia de que a rota filha será sempre uma permutação válida.
-        
-        1. Cópia do Segmento Central (Bloco de Cidades)
-        O segmento central do Pai 1 é copiado diretamente para o Filho 1.
-
-        PAI 1: A B C D E F G H
-        PAI 2: H G E B A C F D
-        FILHO:_ _  _ D E F _ _ _
-
-        2. Criação da Lista de Preenchimento (Cidades Restantes)
-        O algoritmo identifica quais cidades de Pai 2 não foram copiadas para o F1 (as cidades que não são C, E, ou B). 
-        Essas cidades são listadas na ordem em que aparecem no Pai 2.
-
-        H G E B A C F D
-        Lista de Preenchimento (Ordem Relativa): {H, G, B, A, C}
-
-        3. Preenchimento do Filho (Preservando a Ordem)
-
-        O algoritmo preenche os espaços vazios de F1 usando a Lista de Preenchimento, começando imediatamente após o 
-        segmento copiado do Pai 1 (ou seja, a partir da Posição 7) e ciclando para o início se necessário.
-
-        POSIÇÃO
-        7=H
-        8=G
-        1=B
-        2=A
-        3=C
-        Resultado final= B A C D E F H G  
-
-
+        tamanho = len(pai1)
         
         
+        genes1 = pai1[1:-1]  
+        genes2 = pai2[1:-1]
         
-        Faremos dois filho=um começando com o pai1=[0,1,2,4,3,0]
-        e o outro com o pai2=[0, 3, 4, 1, 2, 0]
-
-        Geralmente se escolhe um segmento central de 30% a 70% do total de cidades
-
-        4 pontos 
-
-        #chaves=['R', 'A', 'B', 'C', 'D']
-        [0, 1, 2, 4, 3, 0]
-        [0, 3, 4, 1, 2, 0]  
-        18
-        36
-
-        """
+        #escolher 2 pontos de core,começo e final
+        comeco, final = sorted(random.sample(range(len(genes1)), 2))
         
-        #gerando filho 1
+        # Herda segmento do pai1
+        filho1 = [None] * len(genes1)
+        filho1[comeco:final+1] = genes1[comeco:final+1]
+        
+        # Preenche com genes do pai2
+        pointer = (final + 1) % len(genes1)
+        for gene in genes2[final+1:] + genes2[:final+1]:
+            if gene not in filho1:
+                filho1[pointer] = gene
+                pointer = (pointer + 1) % len(genes1)
+        
+        # Adiciona depósitos
+        return [0] + filho1 + [0], [0] + genes2 + [0]  # Segundo filho simplificado
 
-        #PAI 1: A B C D E F G H
-        #PAI 2: H G E B A C F D
+    def mutar(self, filhos):
+        """Aplica mutação por swap"""
+        taxa_mutacao = 0.1
+        
+        for filho in filhos:
+            if random.random() < taxa_mutacao:
+                # Escolhe dois pontos aleatórios (excluindo depósitos)
+                idx1, idx2 = random.sample(range(1, len(filho) - 1), 2)
+                filho[idx1], filho[idx2] = filho[idx2], filho[idx1]
+                
+        return filhos
 
+    def substituir_populacao(self, populacao_avaliada, filhos):
+        """Substituição com elitismo"""
+        # Mantém os melhores da geração anterior
+        elitismo = 2  # Mantém os 2 melhores
+    
+        nova_populacao = []
+    
+        # FOR CLÁSSICO - Adiciona os melhores indivíduos (elitismo)
+        for i in range(elitismo):
+            if i < len(populacao_avaliada):
+                rota = populacao_avaliada[i][0]  # Pega apenas a rota (sem o custo)
+                nova_populacao.append(rota)
+    
+        
+        for filho in filhos:
+            nova_populacao.append(filho)
+    
+        # FOR CLÁSSICO - Completa com indivíduos aleatórios se necessário
+        while len(nova_populacao) < len(self.populacao):
+            individuo = self.gerar_individuo_aleatorio()
+            nova_populacao.append(individuo)
+    
+        # Retorna apenas o tamanho original da população
+        return nova_populacao[:len(self.populacao)]
 
-    def mutacao_swap(self):
+    def gerar_individuo_aleatorio(self):
+        """Gera indivíduo aleatório para manter diversidade"""
+        pontos = list(range(1, len(self.chaves)))  # Exclui depósito (0)
+        random.shuffle(pontos)
+        return [0] + pontos + [0]
 
-        pass
-
-    def mutacao_inversao(self):
-        pass
-
-    def mutacao_deslocamento(self):
-        pass
+    def atualizar_melhor_global(self, populacao_avaliada):
+        """Atualiza a melhor solução encontrada"""
+        melhor_rota, melhor_custo = populacao_avaliada[0]
+        
+        if melhor_custo < self.melhor_custo_global:
+            self.melhor_rota_global = melhor_rota
+            self.melhor_custo_global = melhor_custo
 
     def retornar(self):
-        return self.melhor_rota
+        return self.melhor_rota_global
+
     def retornar2(self):
-        return self.segunda_melhor_rota
-    
-    def retornar3(self):
-        return self.menor_custo
-    def retornar4(self):
-        return self.segundo_menor_custo
+        return self.melhor_custo_global

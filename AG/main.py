@@ -22,28 +22,20 @@ class Main:
 
 
         ag=AG(self.populacao_inicial,self.chaves,self.matriz_adjacencia,self.dic_indices)
+        
 
         self.melhor=ag.retornar()
         self.melhor2=ag.retornar2()
-        self.menor1=ag.retornar3()
-        self.menor2=ag.retornar4()
+        
 
 
     def get_pop(self):
-        return self.dic_indices
+        return self.melhor
     
     def get_pop1(self):
         return self.melhor2
     
-    def get_pop2(self):
-        return self.menor1
-    
-    def get_pop3(self):
-        return self.menor2
-
-    def get_4(self):
-        return self.chaves
-
+   
 
 
 
@@ -52,8 +44,5 @@ class Main:
 main=Main()
 print(main.get_pop())
 print(main.get_pop1())
-print(main.get_pop2())
-print(main.get_pop3())
-print(main.get_4())
 
 
