@@ -16,14 +16,99 @@ class AG:
         'D': 4}
         """
 
-        self.menor_custo,self.segundo_menor_custo,self.melhor_rota,self.segunda_melhor_rota=self.selecao()
-
-        self.filho1,self.filho2=self.cruzamento()
-
-        self.swap_filho1,self.swap_filho2=self.mutacao_swap()
+        self.loop_geracoes()
+        
 
         
 
+        #avaliação das rotas deve ser feito logo com a população inicial,depois fazendo cruzamento 
+        # e achando os filhos,se 
+
+
+
+    def loop_geracoes(self):
+        """Controla o número de gerações do algoritmo (1000 gerações)"""
+        # Faz uma cópia da população inicial para não modificar a original
+        populacao_atual = []
+    
+        for rota in self.pop_inicial:
+            populacao_atual.append(rota)
+
+        # Inicializa o melhor custo e rota com a população inicial
+        
+    
+        for geracao in range(1000):
+            
+            # Processa uma geração e atualiza a população
+            self.soma_pop_ini()
+        
+           
+
+    def soma_pop_ini(self):
+
+        menor_custo=float("inf")
+        melhor_rota=None
+
+
+        for rota in self.pop_inicial:
+            custo_total=0
+            for i in range(len(rota) - 1):
+                
+                ponto_atual = rota[i]
+                ponto_seguinte = rota[i + 1]
+                # Adiciona a distância entre o ponto atual e o próximo
+                #serrá feito  rota = [0, 1, 2, 3, 0] -> custo = 
+                # matriz_adj[0][1] + matriz_adj[1][2] + matriz_adj[2][3] + matriz_adj[3][0]
+                custo_total += self.matriz_adj[ponto_atual][ponto_seguinte]
+
+
+                """
+                Exemplo de execução para o entendimento
+             [0, 2, 1, 3, 0]
+
+                #ponto atual=0
+                ponto seguinte=2
+                custo+=valor que equivale na matriz de adjacência[0][2]        
+                """
+
+
+                
+
+            if custo_total<=melhor_rota:
+                menor_custo=custo_total
+                melhor_rota=rota
+        
+        self.melhor_rota=melhor_rota
+        self.menor_custo=menor_custo
+
+        self.selecao_atualizada()
+
+        
+
+    
+
+    def selecao_atualizada(self):
+        #seleção é a parte que iremos escolher os pais
+
+        """
+        A seleção pode ser feita de várias formas: aleatória, elitista, por torneio, etc.
+        Você mencionou que não quer usar termos técnicos da biologia, então vamos pensar em 
+        termos de como escolher as rotas para cruzar.
+
+        Vou explicar as opções:
+
+        Seleção aleatória: Escolhemos pares de pais aleatoriamente da população inicial.
+
+        Seleção elitista: Escolhemos os melhores (menor custo) para serem pais.
+
+        Seleção por torneio: Escolhemos aleatoriamente um pequeno grupo e desse grupo selecionamos o 
+        melhor para ser pai.
+        
+        """
+
+        pass
+        
+    
 
     def selecao(self):
         
