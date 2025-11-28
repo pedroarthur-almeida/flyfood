@@ -1,37 +1,34 @@
-
-from python_tsp.heuristics import solve_tsp_local_search
-import numpy as np
-
-
-
+import os
 class TratamentoMatriz:
 
     @staticmethod
     #método de classe,apenas faz uma "conta básica"
-    def distancia(a,b,):
+    def distancia(a,b):
         return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
 
-    def __init__(self):
+    def __init__(self, caminho, usarBR58=False):
         """
         Lê o arquivo de entrada e guarda:
         - nrows  → número de linhas
-        - ncols  → número de colunas
         - matriz → matriz original em formato de lista de listas
-        
 
         """
-      
-        
-        self.nrows, self.ncols, self.matriz = self.ler_matriz_arquivo()
+        self.usar_br58 = usarBR58
+        self.caminho= caminho
 
-        self.chaves,self.matriz_adjacencia=self.converter_matriz()
-        self.permutacao,self.distancia_total=self.matriz_tsp()
+
+        if usarBR58:
+            self.chaves, self.matriz_adjacencia = self.carregar_br58()
+        else:
+            self.nrows, self.ncols, self.matriz = self.ler_matriz_arquivo()
+            self.chaves,self.matriz_adjacencia=self.converter_matriz()
 
 
     def ler_matriz_arquivo(self):
         try:
-            with open(r"flyfood/AG/entrada.txt", "r", encoding="utf-8") as f:
+            caminho_absoluto = os.path.join(os.path.dirname(__file__), self.caminho)
+            with open(caminho_absoluto, "r", encoding="utf-8") as f:
                 linhas = [ln.strip() for ln in f if ln.strip()]
         except FileNotFoundError:
             raise FileNotFoundError("Arquivo não encontrado.")
@@ -51,15 +48,20 @@ class TratamentoMatriz:
         for i in range(1, 1 + nrows):
             if i < len(linhas):
                 tokens = linhas[i].split()
+
                 if len(tokens) == 1 and len(tokens[0]) == ncols:
                     elementos = list(tokens[0])
                 else:
                     elementos = tokens
+
                 if len(elementos) > ncols:
                     raise ValueError(f"Linha {i} com colunas a mais.")
+                
                 while len(elementos) < ncols:
                     elementos.append("0")
+
                 matriz.append(elementos[:ncols])
+
             else:
                 matriz.append(["0"] * ncols)
 
@@ -111,49 +113,84 @@ class TratamentoMatriz:
 
         #matriz convertida é a matriz de adjacência
         #chaves ordenadas é =#chaves=['R', 'A', 'B', 'C', 'D']
-
-    def matriz_tsp(self):
-        matriz_np = np.array(self.matriz_adjacencia) 
-        #Conversão para NumPy,pois a biblioteca usada trabalha melhor nesse formato
-        #de array
-        """
-    array(
-            [ 
-            [0, 2, 3, 5],
-            [2, 0, 4, 1],
-            [3, 4, 0, 2],
-            [5, 1, 2, 0]
-            ]
-            )
-
-        """
-        permutacao, distancia_total = solve_tsp_local_search(matriz_np)
-
-        """
-        A função solve_tsp_local_search resolve o Problema do Caixeiro Viajante (TSP) usando heurísticas de busca local. 
-        Ela recebe como entrada uma matriz de adjacência (representada como um numpy.array) onde cada posição [i][j] 
-        indica a distância do ponto i para o ponto j.
-
-        O algoritmo tenta encontrar uma rota de menor custo que visita todos os pontos exatamente uma vez, 
-        retornando dois resultados:
-
-        permutation - uma lista de inteiros que representa a ordem dos pontos que devem ser visitados.
-        Esses inteiros são índices da matriz, não os nomes originais dos pontos.
-        Exemplo: [0, 2, 1, 3].
-
-        distance - um número que representa o custo total da rota calculada, obtido somando as distâncias da matriz seguindo a ordem indicada pela permutação.
-
-        O método não garante encontrar a solução ótima absoluta (pois é heurístico), mas encontra soluções rápidas e de 
-        boa qualidade usando operações como troca de vizinhos, reversão de trechos da rota e outras técnicas de otimização local.
-    
-        permutacao = [0, 3, 1, 2] -->índices da permutação
-        distancia_total = 17 -->distância calculada
-    
-        """
-
-        return permutacao, distancia_total
+    @staticmethod
+    def salvar_como_tsplib(chaves, matriz, nome_arquivo="instancia.tsp"):
+        n = len(chaves)
+        with open(nome_arquivo, "w") as f:
+            f.write(f"NAME: {nome_arquivo}\n")
+            f.write("TYPE: TSP\n")
+            f.write(f"DIMENSION: {n}\n")
+            f.write("EDGE_WEIGHT_TYPE: EXPLICIT\n")
+            f.write("EDGE_WEIGHT_FORMAT: FULL_MATRIX\n")
+            f.write("EDGE_WEIGHT_SECTION\n")
+            for linha in matriz:
+                f.write(" ".join(map(str, linha)) + "\n")
+            f.write("EOF\n")
 
     def get_resultados(self):
-        return self.permutacao,self.distancia_total,self.chaves,self.matriz_adjacencia
+        return self.chaves,self.matriz_adjacencia
     
+
     
+    def carregar_br58(self):
+        # Garante que acha o arquivo no mesmo diretório do script
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        caminho_absoluto = os.path.join(base_dir, self.caminho)
+        distancias = {}
+
+        try:
+            with open(caminho_absoluto, "r") as arq:
+                linhas = arq.readlines()
+
+            numeros_brutos = []
+            lendo_dados = False
+
+            for linha in linhas:
+                linha = linha.strip()
+                
+                # Procura a marcação onde começam os números no padrão TSPLIB
+                if "EDGE_WEIGHT_SECTION" in linha:
+                    lendo_dados = True
+                    continue
+                
+                # Se encontrar EOF, para
+                if "EOF" in linha:
+                    break
+                
+                # Se já passou pelo cabeçalho OU se a linha começa com número (caso sem cabeçalho)
+                if lendo_dados or (linha and linha[0].isdigit()):
+                    lendo_dados = True 
+                    # Quebra a linha em pedaços e pega só o que for dígito
+                    partes = linha.split()
+                    for p in partes:
+                        if p.isdigit():
+                            numeros_brutos.append(int(p))
+
+            # Agora distribui os números na lógica triangular superior
+            iterador = iter(numeros_brutos)
+            for i in range(1, 58):       # Linhas: cidade 1 a 57
+                for j in range(i+1, 59): # Colunas: cidade i+1 a 58
+                    try:
+                        peso = next(iterador)
+                        distancias[(i, j)] = peso
+                        distancias[(j, i)] = peso
+                    except StopIteration:
+                        raise ValueError("O arquivo acabou antes de preencher a matriz 58x58.")
+
+        except FileNotFoundError:
+            raise FileNotFoundError(f"Arquivo não encontrado: {caminho_absoluto}")
+
+        # --- Montagem da Matriz Final (igual ao original) ---
+        matriz = []
+        for i in range(1, 59):
+            linha = []
+            for j in range(1, 59):
+                if i == j:
+                    linha.append(0)
+                else:
+                    linha.append(distancias.get((i, j), 0))
+            matriz.append(linha)
+
+        chaves = list(range(1, 59))  # cidades 1..58
+
+        return chaves, matriz
