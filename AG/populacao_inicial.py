@@ -83,7 +83,7 @@ class PopulacaoInicial:
 
 
     def opt2(self):
-    # Retorna as rotas SEM 2-opt
+    
         return self.juntarRotas()
     
     def get_populacao(self):
