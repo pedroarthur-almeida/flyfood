@@ -83,54 +83,8 @@ class PopulacaoInicial:
 
 
     def opt2(self):
-
-        """
-        O 2-opt é um método de melhorar uma rota do TSP (Travelling Salesman Problem).
-        Ele não cria uma nova rota do zero — ele pega uma rota existente e tenta deixá-la melhor.
-        """
-        
-       
-
-        
-        
-            
-        #rotas é uma lista que possui rotas geradas aleatoriamente e pelo NN
-        rotas = self.juntarRotas()
-
-        populacao_inicial = []
-
-        # --- aplica 2-opt em cada rota ---
-        for rota in rotas:
-            #irá ler o tamanho da rota
-            n = len(rota)
-
-            # função interna sempre tem acesso à matriz_convertida agora
-            def ganho_troca(rota_local, i, j):
-                a, b = rota_local[i - 1], rota_local[i]
-                c, d = rota_local[j], rota_local[j + 1]
-
-                antes = self.matriz_adj[a][b] + self.matriz_adj[c][d]
-                depois = self.matriz_adj[a][c] + self.matriz_adj[b][d]
-
-                return depois - antes
-
-            melhorou = True
-            while melhorou:
-                melhorou = False
-
-                for i in range(1, n - 2):
-                    for j in range(i + 1, n - 1):
-                        ganho = ganho_troca(rota, i, j)
-                        if ganho < 0:
-                            rota[i:j+1] = list(reversed(rota[i:j+1]))
-                            melhorou = True
-                            break
-                    if melhorou:
-                        break
-
-            populacao_inicial.append(rota)
-
-        return populacao_inicial
+    # Retorna as rotas SEM 2-opt
+        return self.juntarRotas()
     
     def get_populacao(self):
         return self.populacao_inicial,self.dic_indices

@@ -4,13 +4,16 @@ from populacao_inicial import *
 
 from algoritmo_genetico import *
 
+import time
+
 class Main:
     def __init__(self):
         
-
+        self.inicio = time.time()
+        
         
         tm = TratamentoMatriz()
-        self.perm, self.dist,self.chaves,self.matriz_adjacencia = tm.get_resultados()
+        self.chaves,self.matriz_adjacencia = tm.get_resultados()
         #chaves=['R', 'A', 'B', 'C', 'D']
 
        
@@ -24,16 +27,50 @@ class Main:
         ag=AG(self.populacao_inicial,self.chaves,self.matriz_adjacencia,self.dic_indices)
         
 
-        self.melhor=ag.retornar()
-        self.melhor2=ag.retornar2()
+        self.melhor_rota=ag.retornar()
+        self.melhor_custo=ag.retornar2()
+        #melhores será o melhor custo em cada geração
+        self.melhores=ag.retornar3()
+
+        self.fim = time.time()
         
 
-
-    def get_pop(self):
-        return self.melhor
+    def calcular_distancias_populacao(self):
+        """
+        Calcula a distância de cada rota na população
+        Retorna: lista de tuplas (rota, distancia)
+        """
+        populacao_avaliada = []
     
-    def get_pop1(self):
-        return self.melhor2
+        for rota in self.populacao_inicial:
+            distancia = self.calcular_distancia_rota(rota)
+            populacao_avaliada.append((rota, distancia))
+    
+        return populacao_avaliada
+
+    def calcular_distancia_rota(self, rota):
+        """
+        Calcula a distância total de uma única rota
+        """
+        distancia_total = 0
+        for i in range(len(rota) - 1):
+            ponto_atual = rota[i]
+            ponto_seguinte = rota[i + 1]
+            distancia_total += self.matriz_adjacencia[ponto_atual][ponto_seguinte]
+        return distancia_total
+
+
+    def get_melhorrota(self):
+        return self.melhor_rota
+    
+    def get_melhorcusto(self):
+        return self.melhor_custo
+    
+    def get_melhorlist(self):
+        return self.melhores
+    
+    def get_time(self):
+        return self.fim-self.inicio
     
    
 
@@ -42,7 +79,27 @@ class Main:
 
 
 main=Main()
-print(main.get_pop())
-print(main.get_pop1())
+
+#print(main.calcular_distancias_populacao())
+
+
+
+
+print("Melhor Rota:")
+print(main.get_melhorrota())
+print()
+print("Melhor custo")
+print(main.get_melhorcusto())
+print()
+t=main.get_time()
+print(f"Tempo de execução:{t}")
+
+#lista=main.get_melhorlist()
+
+
+#print("Evolucão do algoritmo")
+#for i in lista:
+    #print(i)
+
 
 

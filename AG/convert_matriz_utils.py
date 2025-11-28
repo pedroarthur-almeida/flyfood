@@ -7,7 +7,7 @@ class TratamentoMatriz:
         return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
 
-    def __init__(self, caminho, usarBR58=False):
+    def __init__(self,usarBR58=False):
         """
         Lê o arquivo de entrada e guarda:
         - nrows  → número de linhas
@@ -15,7 +15,7 @@ class TratamentoMatriz:
 
         """
         self.usar_br58 = usarBR58
-        self.caminho= caminho
+        self.caminho= "entrada.txt"
 
 
         if usarBR58:
@@ -23,6 +23,8 @@ class TratamentoMatriz:
         else:
             self.nrows, self.ncols, self.matriz = self.ler_matriz_arquivo()
             self.chaves,self.matriz_adjacencia=self.converter_matriz()
+
+        
 
 
     def ler_matriz_arquivo(self):
@@ -64,6 +66,7 @@ class TratamentoMatriz:
 
             else:
                 matriz.append(["0"] * ncols)
+
 
         return nrows, ncols, matriz
 
@@ -109,6 +112,7 @@ class TratamentoMatriz:
                     linha.append(TratamentoMatriz.distancia(pontos[a], pontos[b]))
             matriz_convertida.append(linha)
 
+       
         return chaves_ordenadas, matriz_convertida
 
         #matriz convertida é a matriz de adjacência
@@ -128,6 +132,7 @@ class TratamentoMatriz:
             f.write("EOF\n")
 
     def get_resultados(self):
+        
         return self.chaves,self.matriz_adjacencia
     
 

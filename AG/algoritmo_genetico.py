@@ -8,6 +8,7 @@ class AG:
         self.dic_indices = dic_indices
         self.melhor_rota_global = None
         self.melhor_custo_global = float('inf')
+        self.lista_melhores=[]
         
         self.executar_evolucao()
 
@@ -30,10 +31,12 @@ class AG:
             self.populacao = self.substituir_populacao(populacao_avaliada, filhos)
             
             # 6. Atualizar melhor global
-            self.atualizar_melhor_global(populacao_avaliada)
+            self.atualizar_melhor_global(geracao,populacao_avaliada)
 
-    def avaliar_populacao(self ):
+    def avaliar_populacao(self,populacao=None):
         """Calcula fitness para cada indivíduo"""
+        if populacao is None:
+            populacao = self.populacao  # ← Usa parâmetro se fornecido
         populacao_avaliada = []
         for rota in self.populacao:
             custo = self.calcular_custo(rota)
@@ -47,6 +50,10 @@ class AG:
         for i in range(len(rota) - 1):
             custo += self.matriz_adj[rota[i]][rota[i + 1]]
         return custo
+    
+    @staticmethod
+    def distancia(a, b):
+        return abs(a[0] - b[0]) + abs(a[1] - b[1])  # ← ESTÁ CORRETO?
 
     def selecionar_pais(self, populacao_avaliada, geracao):
         """Seleção mista: elitista + aleatória"""
@@ -55,15 +62,15 @@ class AG:
         tamanho_torneio = 3
 
         #número de pais será a metade da população inicial,pois cada par de pais gerar 2 filhos
-        num_pais = len(populacao_avaliada) // 2
+        num_pais = len(populacao_avaliada) 
         
         pais = []
         
         #elitismo pega os melhores
         if geracao % 10 == 0:  # A cada 10 gerações-->apenas para diversificar
-            elitismo = 0.3  # 30% elitista
+            elitismo = 0.2  # 30% elitista
         else:
-            elitismo = 0.4  # 20% elitista
+            elitismo = 0.1  # 20% elitista
             
         num_elite = int(num_pais * elitismo)#-->pegar a quantidade de pais que serão selecionados por elitismo
         #gerações especiais
@@ -101,35 +108,42 @@ class AG:
             filhos.extend([filho1, filho2])
             
         return filhos
-
+ 
     def crossover_ox(self, pai1, pai2):
-        
-        tamanho = len(pai1)
-        
-        
         genes1 = pai1[1:-1]  
         genes2 = pai2[1:-1]
-        
-        #escolher 2 pontos de core,começo e final
-        comeco, final = sorted(random.sample(range(len(genes1)), 2))
-        
-        # Herda segmento do pai1
-        filho1 = [None] * len(genes1)
-        filho1[comeco:final+1] = genes1[comeco:final+1]
-        
-        # Preenche com genes do pai2
-        pointer = (final + 1) % len(genes1)
-        for gene in genes2[final+1:] + genes2[:final+1]:
+        size = len(genes1)
+    
+        start, end = sorted(random.sample(range(size), 2))
+    
+        # FILHO 1 (herda segmento do pai1)
+        filho1 = [None] * size
+        filho1[start:end+1] = genes1[start:end+1]
+    
+        pointer = (end + 1) % size
+        for gene in genes2:
             if gene not in filho1:
+                while filho1[pointer] is not None:
+                    pointer = (pointer + 1) % size
                 filho1[pointer] = gene
-                pointer = (pointer + 1) % len(genes1)
-        
-        # Adiciona depósitos
-        return [0] + filho1 + [0], [0] + genes2 + [0]  # Segundo filho simplificado
+    
+        # FILHO 2 (herda segmento do pai2) ← CORREÇÃO AQUI!
+        filho2 = [None] * size
+        filho2[start:end+1] = genes2[start:end+1]  # Herda de pai2
+    
+        pointer = (end + 1) % size
+        for gene in genes1:  # Preenche com pai1 ← CORREÇÃO AQUI!
+            if gene not in filho2:
+                while filho2[pointer] is not None:
+                    pointer = (pointer + 1) % size
+                filho2[pointer] = gene
+    
+        return [0] + filho1 + [0], [0] + filho2 + [0]  # Ambos com crossover
 
     def mutar(self, filhos):
         """Aplica mutação por swap"""
-        taxa_mutacao = 0.1
+        #quantidade de filhos que vai mutar
+        taxa_mutacao = 0.2 #30%
         
         for filho in filhos:
             if random.random() < taxa_mutacao:
@@ -140,46 +154,61 @@ class AG:
         return filhos
 
     def substituir_populacao(self, populacao_avaliada, filhos):
-        """Substituição com elitismo"""
-        # Mantém os melhores da geração anterior
-        elitismo = 2  # Mantém os 2 melhores
-    
+        elitismo = 2
         nova_populacao = []
     
-        # FOR CLÁSSICO - Adiciona os melhores indivíduos (elitismo)
+        # 1. ELITE - sempre mantém os melhores
         for i in range(elitismo):
             if i < len(populacao_avaliada):
-                rota = populacao_avaliada[i][0]  # Pega apenas a rota (sem o custo)
-                nova_populacao.append(rota)
+                nova_populacao.append(populacao_avaliada[i][0])
     
+    # 2. FILHOS - adiciona até completar população
+    
+        espaco_restante = len(self.populacao) - elitismo
+    
+        if len(filhos) > espaco_restante:
+            # Escolhe filhos ALEATORIAMENTE ← TESTE ESTA MUDANÇA
+            melhores_filhos = random.sample(filhos, espaco_restante)
+            nova_populacao.extend(melhores_filhos)
         
-        for filho in filhos:
-            nova_populacao.append(filho)
-    
-        # FOR CLÁSSICO - Completa com indivíduos aleatórios se necessário
-        while len(nova_populacao) < len(self.populacao):
-            individuo = self.gerar_individuo_aleatorio()
-            nova_populacao.append(individuo)
-    
-        # Retorna apenas o tamanho original da população
-        return nova_populacao[:len(self.populacao)]
+        
+        return nova_populacao
 
     def gerar_individuo_aleatorio(self):
         """Gera indivíduo aleatório para manter diversidade"""
-        pontos = list(range(1, len(self.chaves)))  # Exclui depósito (0)
+        pontos = list(range(1, len(self.chaves)))  #Exclui (0)
         random.shuffle(pontos)
         return [0] + pontos + [0]
 
-    def atualizar_melhor_global(self, populacao_avaliada):
-        """Atualiza a melhor solução encontrada"""
-        melhor_rota, melhor_custo = populacao_avaliada[0]
-        
-        if melhor_custo < self.melhor_custo_global:
-            self.melhor_rota_global = melhor_rota
-            self.melhor_custo_global = melhor_custo
+    def atualizar_melhor_global(self, geracao, populacao_avaliada):
+        """Registra a evolução real do algoritmo"""
+        if not populacao_avaliada:
+            return
+    
+        # Melhor da GERAÇÃO ATUAL (não necessariamente o global)
+        melhor_rota_atual, melhor_custo_atual = populacao_avaliada[0]
+    
+        # Verifica se é uma melhoria GLOBAL
+        if melhor_custo_atual < self.melhor_custo_global:
+            self.melhor_rota_global = melhor_rota_atual
+            self.melhor_custo_global = melhor_custo_atual
+            print(f"🎉 Geração {geracao}: NOVO RECORDE = {melhor_custo_atual}")
+    
+        # ✅ MUDANÇA CRÍTICA: Registra o MELHOR DA GERAÇÃO, não só o global
+        self.lista_melhores.append([
+            geracao, 
+            melhor_rota_atual,           # Melhor desta geração
+            melhor_custo_atual,          # Custo desta geração  
+            self.melhor_custo_global     # Melhor global (para referência)
+        ])
+    
+    
 
     def retornar(self):
         return self.melhor_rota_global
 
     def retornar2(self):
         return self.melhor_custo_global
+    
+    def  retornar3(self):
+        return self.lista_melhores
