@@ -138,64 +138,56 @@ class TratamentoMatriz:
 
     
     def carregar_br58(self):
-        # Garante que acha o arquivo no mesmo diretório do script
+        """
+        Lê um arquivo TSPLIB no formato:
+        EDGE_WEIGHT_TYPE: EXPLICIT
+        EDGE_WEIGHT_FORMAT: UPPER_ROW
+
+        Constrói e retorna a matriz de adjacência completa 58×58.
+        """
+
         base_dir = os.path.dirname(os.path.abspath(__file__))
-        caminho_absoluto = os.path.join(base_dir, self.caminho)
-        distancias = {}
+        arquivo_br58 = os.path.join(base_dir, "edgesbrasil58.tsp")
 
-        try:
-            with open(caminho_absoluto, "r") as arq:
-                linhas = arq.readlines()
+        with open(arquivo_br58, "r") as f:
+            linhas = f.readlines()
 
-            numeros_brutos = []
-            lendo_dados = False
+        # 1. Ignorar cabeçalho até encontrar EDGE_WEIGHT_SECTION
+        idx = 0
+        while idx < len(linhas) and "EDGE_WEIGHT_SECTION" not in linhas[idx]:
+            idx += 1
 
-            for linha in linhas:
-                linha = linha.strip()
-                
-                # Procura a marcação onde começam os números no padrão TSPLIB
-                if "EDGE_WEIGHT_SECTION" in linha:
-                    lendo_dados = True
-                    continue
-                
-                # Se encontrar EOF, para
-                if "EOF" in linha:
-                    break
-                
-                # Se já passou pelo cabeçalho OU se a linha começa com número (caso sem cabeçalho)
-                if lendo_dados or (linha and linha[0].isdigit()):
-                    lendo_dados = True 
-                    # Quebra a linha em pedaços e pega só o que for dígito
-                    partes = linha.split()
-                    for p in partes:
-                        if p.isdigit():
-                            numeros_brutos.append(int(p))
+        if idx == len(linhas):
+            raise ValueError("EDGE_WEIGHT_SECTION não encontrado no arquivo TSPLIB.")
 
-            # Agora distribui os números na lógica triangular superior
-            iterador = iter(numeros_brutos)
-            for i in range(1, 58):       # Linhas: cidade 1 a 57
-                for j in range(i+1, 59): # Colunas: cidade i+1 a 58
-                    try:
-                        peso = next(iterador)
-                        distancias[(i, j)] = peso
-                        distancias[(j, i)] = peso
-                    except StopIteration:
-                        raise ValueError("O arquivo acabou antes de preencher a matriz 58x58.")
+        idx += 1  # primeira linha dos dados numéricos
 
-        except FileNotFoundError:
-            raise FileNotFoundError(f"Arquivo não encontrado: {caminho_absoluto}")
+        # 2. Carregar todos os números da upper row
+        upper_values = []
+        for i in range(idx, len(linhas)):
+            linha = linhas[i].strip()
+            if linha == "EOF":
+                break
+            if linha == "":
+                continue
+            nums = linha.split()
+            for n in nums:
+                upper_values.append(int(n))
 
-        # --- Montagem da Matriz Final (igual ao original) ---
-        matriz = []
-        for i in range(1, 59):
-            linha = []
-            for j in range(1, 59):
-                if i == j:
-                    linha.append(0)
-                else:
-                    linha.append(distancias.get((i, j), 0))
-            matriz.append(linha)
+        # 3. Reconstruir matriz 58×58
+        N = 58
+        matriz = [[0] * N for _ in range(N)]
 
-        chaves = list(range(1, 59))  # cidades 1..58
+        k = 0
+        for i in range(N):
+            for j in range(i + 1, N):
+                matriz[i][j] = upper_values[k]
+                matriz[j][i] = upper_values[k]
+                k += 1
+
+        if k != (N * (N - 1)) // 2:
+            raise ValueError("Quantidade incorreta de valores para UPPER_ROW.")
+
+        chaves = list(range(N))
 
         return chaves, matriz
