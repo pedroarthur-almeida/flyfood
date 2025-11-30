@@ -11,8 +11,13 @@ class Main:
         
         self.inicio = time.time()
         
-        
-        tm = TratamentoMatriz()
+        pergunta=""
+        while pergunta != 1 and pergunta != 2:
+            pergunta = int(input("Digite 1 para Brasil58\nDigite 2 para FlyFood\n"))
+        if pergunta ==1:
+            tm = TratamentoMatriz(usarBR58=True)
+        if pergunta == 2:
+            tm = TratamentoMatriz()
         self.chaves,self.matriz_adjacencia = tm.get_resultados()
         #chaves=['R', 'A', 'B', 'C', 'D']
 
@@ -47,6 +52,7 @@ class Main:
             populacao_avaliada.append((rota, distancia))
     
         return populacao_avaliada
+
 
     def calcular_distancia_rota(self, rota):
         """

@@ -83,7 +83,8 @@ class AG:
                 individuo = populacao_avaliada[i]  #pega a tupla (rota, custo)
                 rota = individuo[0]  #extrai apenas a rota (primeiro elemento)
                 pais.append(rota)
-        
+        if tamanho_torneio > len(populacao_avaliada):
+            tamanho_torneio = len(populacao_avaliada)
         # Torneio para o restante
         while len(pais) < num_pais:
             #tamanho torneio define quantos indivíduos disputam em cada "batalha"
