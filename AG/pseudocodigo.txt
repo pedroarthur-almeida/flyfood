@@ -1,0 +1,32 @@
+
+
+INÍCIO
+
+    função ler matriz:
+        irá ler toda a matriz do arquivo de entrada.txt
+        e retornará o número de linhas,colunas e a matriz em formato de listas
+
+    função converter matriz:
+        converterá a matriz em forma de listas em uma matriz de adjacência
+    
+
+    funcão gerar individuos aleatórios:
+        essa função servirá para gerar indivíduos aleatórios que farão 
+        parte da população inicial
+
+    função NN:
+        gerará indivíduos para a população inicial a partir da heurísitica do near neighboor(vizinho mais próximo)
+
+    função 2opt(mudaremos o nome):
+        serve para juntar os individuos gerados aleatoriamente com os gerados pelo NN,
+        fazendo assim a população inicial do AG
+
+    função executar evolução:
+        Irá controlar o loop de quantas gerações terá o AG
+    
+    função avaliar população():
+        função irá avaliar a população em relação ao custo da rota e 
+        retornará uma lista ordenada crescentemente em relação
+    
+    função calcular custo():
+        calculará o custo da rota,utilizando a matriz de adjacência.
