@@ -14,7 +14,7 @@ class AG:
 
     def executar_evolucao(self):
         """Executa 100 gerações do algoritmo genético"""
-        for geracao in range(1000):
+        for geracao in range(2000):
             #Analisar as rotas e custos da população inicial
             populacao_avaliada = self.avaliar_populacao()
             
