@@ -86,9 +86,9 @@ class Main:
 
 
 
-mem_inicial = psutil.virtual_memory()
+processo = psutil.Process(os.getpid())
 
-total_inicial = mem_inicial.total / (1024**3)  #converte para GB
+mem_inicial = processo.memory_info().rss / (1024**2)  # MB
 
 
 
@@ -108,11 +108,12 @@ print()
 t=main.get_time()
 print(f"Tempo de execução:{t}")
 
-mem_final = psutil.virtual_memory()
 
-total_final = mem_inicial.total / (1024**3)
 
-custo=total_final-total_inicial
+mem_final = processo.memory_info().rss / (1024**2)  # MB
+
+custo = mem_final - mem_inicial
+
 
 print(f"Custo de memória RAM total:{custo}")
 
