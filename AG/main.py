@@ -13,7 +13,7 @@ class Main:
         
         self.inicio = time.time()
         
-        pergunta=""
+        pergunta=None
         while pergunta != 1 and pergunta != 2:
             pergunta = int(input("Digite 1 para Brasil58\nDigite 2 para FlyFood\n"))
         if pergunta ==1:
