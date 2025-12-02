@@ -1,0 +1,58 @@
+
+
+INÍCIO
+
+    função ler matriz:
+        irá ler toda a matriz do arquivo de entrada.txt
+        e retornará o número de linhas,colunas e a matriz em formato de listas
+
+    função converter matriz:
+        converterá a matriz em forma de listas em uma matriz de adjacência
+    
+
+    funcão gerar individuos aleatórios:
+        essa função servirá para gerar indivíduos aleatórios que farão 
+        parte da população inicial
+
+    função NN:
+        gerará indivíduos para a população inicial a partir da heurísitica do near neighboor(vizinho mais próximo)
+
+    função 2opt():
+        serve para juntar os individuos gerados aleatoriamente com os gerados pelo NN,
+        fazendo assim a população inicial do AG
+
+    função executar evolução:
+        Irá controlar o loop de quantas gerações terá o AG(o valor do loop é 1000-->irá repetir 1000 gerações)
+    
+    função avaliar população():
+        função irá avaliar a população em relação ao custo da rota e 
+        retornará uma lista ordenada crescentemente em relação
+    
+    função calcular custo():
+        calculará o custo da rota,utilizando a matriz de adjacência.
+        Dessa forma,poderemos avaliar o melhor resultado já da população inicial(geração)
+
+    função selecionar pais():
+        essa função é responsável por escolher de forma elitista e aleatória
+        os pais que irão produzir a próxima geração.
+        cada par de pais gera um par de 
+        
+    função cruzar():
+        essa função é responsável por cruzar os pais para gerar novos filhos
+        utilizamos o cruzamento de ordem OX 
+
+    função mutar():
+        função utilizada para mutar os filhos gerados pelo cruzamento.
+        apenas uma parte dos filhos será mutada,com base na mutação do tipo swap.
+
+    função substituir população():
+        essa função será utilizada para gerar uma nova população inicial,para a próxima geração.
+        apenas uma parte dos filhos irá compor a nova população,e uma parte da população anterior
+        será substituida
+
+    função atualizar melhor global():
+        essa função serve para atualizar qual será a melhor rota de tal população.
+        ajudando no controle e na análise dos dados
+
+FIM
+    
