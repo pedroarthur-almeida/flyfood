@@ -22,7 +22,7 @@ INÍCIO
         fazendo assim a população inicial do AG
 
     função executar evolução:
-        Irá controlar o loop de quantas gerações terá o AG
+        Irá controlar o loop de quantas gerações terá o AG(o valor do loop é 1000-->irá repetir 1000 gerações)
     
     função avaliar população():
         função irá avaliar a população em relação ao custo da rota e 
@@ -30,3 +30,4 @@ INÍCIO
     
     função calcular custo():
         calculará o custo da rota,utilizando a matriz de adjacência.
+        Dessa forma,poderemos avaliar o melhor resultado já da população inicial(geração)

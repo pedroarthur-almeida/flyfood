@@ -6,6 +6,8 @@ from algoritmo_genetico import *
 
 import time
 
+import psutil
+
 class Main:
     def __init__(self):
         
@@ -84,6 +86,12 @@ class Main:
 
 
 
+mem_inicial = psutil.virtual_memory()
+
+total_inicial = mem_inicial.total / (1024**3)  #converte para GB
+
+
+
 main=Main()
 
 #print(main.calcular_distancias_populacao())
@@ -99,6 +107,15 @@ print(main.get_melhorcusto())
 print()
 t=main.get_time()
 print(f"Tempo de execução:{t}")
+
+mem_final = psutil.virtual_memory()
+
+total_final = mem_inicial.total / (1024**3)
+
+custo=total_final-total_inicial
+
+print(f"Custo de memória RAM total:{custo}")
+
 
 #lista=main.get_melhorlist()
 
