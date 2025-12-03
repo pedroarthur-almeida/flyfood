@@ -35,3 +35,37 @@ Com essa ampliação, o projeto suporta tanto soluções exatas (força bruta) q
 
 # Instalação
 Clone o repositório:
+git clone https://github.com/pedroarthur-almeida/flyfood.git
+
+
+Instale os requisitos:
+pip install -r requirements.txt
+
+
+Execute o programa:
+python main.py
+
+
+# Ambiente virtual (opcional)
+### Windows:
+python -m venv venv
+venv\Scripts\activate
+
+
+### Linux/Mac:
+python -m venv venv
+source venv/bin/activate
+
+
+# Desenvolvedores
+- Pedro Arthur Marques de Almeida  
+  https://github.com/pedroarthur-almeida  
+
+- Matheus de Castro Pecora  
+  https://github.com/Matheuscastro1903  
+
+- Samuel Andrade Adelino da Silva  
+  https://github.com/samuelandradea  
+
+- Matheus Henrique Filgueira Cintra  
+  https://github.com/CintraMatheus  
